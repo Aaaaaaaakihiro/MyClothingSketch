@@ -118,5 +118,5 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 		}
 	}
 	
-	//picRect1.dragEvent(dragInfo);
+	picRect1.dragEvent(dragInfo);
 }
