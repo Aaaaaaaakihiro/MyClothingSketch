@@ -1,5 +1,4 @@
 ofxAssimpModelLoader
-ofxFBX
 ofxGui
 ofxOpenCv
 ofxXmlSettings

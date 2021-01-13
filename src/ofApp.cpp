@@ -117,6 +117,6 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 			myModel.loadModel(dragInfo.files[i]);
 		}
 	}
-	
-	picRect1.dragEvent(dragInfo);
+	//ドラッグアンドドロップするウィンドウのドラッグイベント起動
+	//picRect1.dragEvent(dragInfo);
 }
