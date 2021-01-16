@@ -1,5 +1,6 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxAssimpModelLoader.h"
 
 class DrawDragAndDropRect
 {
@@ -8,9 +9,16 @@ class DrawDragAndDropRect
 		void draw();
 		void keyReleased();
 		void dragEvent(ofDragInfo dragInfo);
+		void setBonePosition(int x,int y);
+		void update();
 
+	private:
 		ofImage img;
+		ofxAssimpModelLoader model;
+		ofxAssimpModelLoader thumbnailModel;
 		float xPos, yPos, width, height;
+		int bpx, bpy = -500;
+		bool boneSetted = false;
 
 		//íZåaì‡Ç…éwíËÇÃç¿ïWÇ™ä‹Ç‹ÇÍÇƒÇ¢ÇÍÇŒtrue,ÇªÇ§Ç≈Ç»ÇØÇÍÇŒfalse
 		/*bool inside(float px, float py) {

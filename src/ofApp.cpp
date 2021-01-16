@@ -111,12 +111,7 @@ void ofApp::gotMessage(ofMessage msg){
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
-	for (int i = 0; i < dragInfo.files.size(); i++) {
-		string ext = ofToLower(ofFilePath::getFileExt(dragInfo.files[i]));
-		if (ext == "dae") {
-			myModel.loadModel(dragInfo.files[i]);
-		}
-	}
+	
 	//ドラッグアンドドロップするウィンドウのドラッグイベント起動
 	//picRect1.dragEvent(dragInfo);
 }

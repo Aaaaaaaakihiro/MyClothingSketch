@@ -6,6 +6,10 @@ void DrawDragAndDropRect::setUp(float _x, float _y, float _width, float _height)
 	yPos = _y;
 	width = _width;
 	height = _height;
+	model.setPosition(bpx, bpy, 0);
+	model.setScale(0.5, 0.5, 0.5);
+	thumbnailModel.setPosition(_x + _width, _y + _height, 0);
+	thumbnailModel.setScale(0.1, 0.1, 0.1);
 }
 
 //’ZŒ`‚Ì•`‰æ
@@ -18,6 +22,15 @@ void DrawDragAndDropRect::draw() {
 	if (img.isAllocated()) {
 		img.draw(xPos, yPos, width, height);
 	}
+	if(boneSetted) model.drawFaces();
+	thumbnailModel.drawFaces();
+}
+
+void DrawDragAndDropRect::update() {
+	
+	model.update();
+	thumbnailModel.update();
+	model.setPosition(bpx,bpy,0);
 }
 
 void DrawDragAndDropRect::keyReleased() {
@@ -30,7 +43,23 @@ void DrawDragAndDropRect::dragEvent(ofDragInfo dragInfo) {
 			yPos <= dragInfo.position.y &&
 			dragInfo.position.x <= xPos + width &&
 			dragInfo.position.y <= yPos + height) {
-			img.load(dragInfo.files[i]);
+			for (int i = 0; i < dragInfo.files.size(); i++) {
+				string ext = ofToLower(ofFilePath::getFileExt(dragInfo.files[i]));
+				if (ext == "dae") {
+					model.loadModel(dragInfo.files[i]);
+					thumbnailModel.loadModel(dragInfo.files[i]);
+				}
+				else if (ext == "jpg" || ext == "jpeg" || ext == "png") {
+					img.load(dragInfo.files[i]);
+				}
+			}
+			
 		}
 	}
+}
+
+void DrawDragAndDropRect::setBonePosition(int x, int y) {
+	if (!boneSetted) boneSetted = true;
+	bpx = x;
+	bpy = y;
 }
