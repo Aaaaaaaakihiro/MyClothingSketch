@@ -2,9 +2,21 @@
 
 #include "ofMain.h"
 #include "DrawDragAndDropRect.h"
-#include "ofxAssimpModelLoader.h"
+//#include "ofxAssimpModelLoader.h"
 #include "ofxGui.h"
-#define NUM 5
+#include "map"
+#define NUM 7
+
+enum boneName
+{
+	head,
+	r_shoulder,
+	l_shoulder,
+	chest,
+	waist,
+	r_leg,
+	l_leg
+};
 
 class ofApp : public ofBaseApp {
 
@@ -12,7 +24,6 @@ public:
 	void setup();
 	void update();
 	void draw();
-
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
@@ -25,15 +36,39 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	DrawDragAndDropRect picRect1;
-
-	ofVec2f pos[NUM];
-	ofxAssimpModelLoader myModel;
-	ofCamera camera;
-	ofLight light;
-	
-
-	int cCoutnerNum = 0;
 private:
-	float mPosX, mPosY;
+	//ドラッグアンドドロップウィンドウ
+	DrawDragAndDropRect _characterWindow, _mWindow0, 
+		_mWindow1, _mWindow2, _mWindow3, _mWindow4, _parameterWindow;
+	std::map<int, DrawDragAndDropRect> _mWindowArray;
+	//ボーンポイントの座標
+	ofVec2f _pos[NUM], _minPos, _maxPos, _neutralRotate, _maxRotate, _minRotate;
+	std::map<int, ofVec2f> _bonePointArray;
+	//3Dモデルのローダー
+	//ofxAssimpModelLoader myModel;
+	//3Dモデル用カメラ
+	ofCamera _camera;
+	//3Dモデルライト
+	ofLight _light;
+	//ofxGui関連
+	ofxGuiGroup _groupGui;
+	ofxVec2Slider _model_0_Pos, _model_1_Pos, _model_2_Pos,
+		_model_3_Pos, _model_4_Pos, 
+		_model_0_Rotate, _model_1_Rotate, _model_2_Rotate, 
+		_model_3_Rotate, _model_4_Rotate;
+	ofxFloatSlider _model_0_Size, _model_1_Size, _model_2_Size,
+		_model_3_Size, _model_4_Size;
+
+	//衣服Modelの数
+	int _modelNum = 4;
+	//ボーンポイントの数
+	int _cCoutnerNum = 0;
+	//UIのパディングに関する変数
+	int  _verticalPadding = 20, _horizontalPadding = 10,
+		_arrayPadding = 32, 
+		_cWWidth = 724, _windowHeight = 728,
+		_mWWidth = 130, _mWHeight = 120,
+		_pWWidth = 140;
+	//3Dモデルの座標
+	float _mPosX, _mPosY;
 };
