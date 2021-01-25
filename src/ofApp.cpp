@@ -5,39 +5,70 @@ void ofApp::setup(){
 	//背景の設定
 	ofBackground(255, 255, 255);
 
-	//ボーンの座標
-	_bonePointArray.insert(std::make_pair(boneName::head, ofVec2f(0, 0)));
-	_bonePointArray.insert(std::make_pair(boneName::r_shoulder, ofVec2f(0, 0)));
-	_bonePointArray.insert(std::make_pair(boneName::l_shoulder, ofVec2f(0, 0)));
-	_bonePointArray.insert(std::make_pair(boneName::chest, ofVec2f(0, 0)));
-	_bonePointArray.insert(std::make_pair(boneName::waist, ofVec2f(0, 0)));
-	_bonePointArray.insert(std::make_pair(boneName::r_leg, ofVec2f(0, 0)));
-	_bonePointArray.insert(std::make_pair(boneName::l_leg, ofVec2f(0, 0)));
-
+	//ボーンの座標の初期化
+	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::head), ofVec2f(0, 0)));
+	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::r_shoulder), ofVec2f(0, 0)));
+	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::l_shoulder), ofVec2f(0, 0)));
+	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::chest), ofVec2f(0, 0)));
+	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::waist), ofVec2f(0, 0)));
+	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::r_leg), ofVec2f(0, 0)));
+	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::l_leg), ofVec2f(0, 0)));
+	//クリックポイントの初期化
+	/*for (int i = 0; i < NUM; i++)
+	{
+		_pos[i].x = 0;
+		_pos[i].y = 0;
+	}*/
+	
 	//guiのセットアップ
+	//3Dモデルが表示される限界座標の設定
 	_minPos = ofVec2f(0, 0);
 	_maxPos = ofVec2f(ofGetWindowWidth(), ofGetWindowHeight());
+	//3dモデルの回転限界角を設定
 	_minRotate = ofVec2f(-180, -180);
 	_maxRotate = ofVec2f(180, 180);
+	//初期回転角
 	_neutralRotate = ofVec2f(0, 0);
+	//GUIグループの初期化
 	_groupGui.setup("", "", ofGetWindowWidth() - 200, _verticalPadding);
-	_groupGui.add(_model_0_Pos.setup("Model_1_Pos", _pos[0], _minPos, _maxPos));
-	_groupGui.add(_model_0_Rotate.setup("Model_1_Rotate", _neutralRotate, _minRotate,_maxRotate));
-	_groupGui.add(_model_0_Size.setup("Model_1_Size",0.5, 0, 1.0));
-	_groupGui.add(_model_1_Pos.setup("Model_2_Pos", _pos[1], _minPos, _maxPos));
-	_groupGui.add(_model_1_Rotate.setup("Model_2_Rotate", _neutralRotate, _minRotate, _maxRotate));
-	_groupGui.add(_model_1_Size.setup("Model_2_Size", 0.5, 0, 1.0));
+	//GUIの代入
+	//頭
+	_groupGui.add(_model_0_Pos.setup("Cap_Pos", 
+		_bonePointArray.at(static_cast<int>(boneName::head)), 
+		_minPos, _maxPos));
+	_groupGui.add(_model_0_Rotate.setup("Cap_Rotate", _neutralRotate, _minRotate,_maxRotate));
+	_groupGui.add(_model_0_Size.setup("Cap_Size",0.5, 0, 1.0));
+	//トップス
+	_groupGui.add(_model_1_Pos.setup("Tops_Pos", 
+		_pos[1], 
+		_minPos, _maxPos));
+	_groupGui.add(_model_1_Rotate.setup("Tops_Rotate", _neutralRotate, _minRotate, _maxRotate));
+	_groupGui.add(_model_1_Size.setup("Tops_Size", 0.5, 0, 1.0));
+	//ボトムス
+	_groupGui.add(_model_2_Pos.setup("Bottoms_Pos", 
+		_pos[2], 
+		_minPos, _maxPos));
+	_groupGui.add(_model_2_Rotate.setup("Bottoms_Rotate", _neutralRotate, _minRotate, _maxRotate));
+	_groupGui.add(_model_2_Size.setup("Bottoms_Size", 0.5, 0, 1.0));
+	//シューズ
+	_groupGui.add(_model_3_Pos.setup("Shoes_Pos", 
+		_pos[3], 
+		_minPos, _maxPos));
+	_groupGui.add(_model_3_Rotate.setup("Shoes_Rotate", _neutralRotate, _minRotate, _maxRotate));
+	_groupGui.add(_model_3_Size.setup("Shoes_Size", 0.5, 0, 1.0));
+
 	//mWindowArrayにmWindowを追加
 	_mWindowArray.insert(std::make_pair(0, _mWindow0));
 	_mWindowArray.insert(std::make_pair(1, _mWindow1));
 	_mWindowArray.insert(std::make_pair(2, _mWindow2));
 	_mWindowArray.insert(std::make_pair(3, _mWindow3));
 	_mWindowArray.insert(std::make_pair(4, _mWindow4));
+
 	//DDRectを初期化
 	//キャラウィンドウ
 	_characterWindow.setUp(ofGetWindowWidth() * 0.5 - _cWWidth * 0.5 ,
 		/*ofGetWindowHeight() * 0.5 - _windowHeight * 0.5*/_verticalPadding, 
-		_cWWidth, _windowHeight);
+		_cWWidth - 60, _windowHeight - _horizontalPadding - _clickWindowHeight);
 	//モデルウィンドウをmapから呼び出してsetUpする
 	for (int i = 0; i < _modelNum; i++) {
 		_mWindowArray.at(i).setUp(_horizontalPadding, _verticalPadding
@@ -46,15 +77,10 @@ void ofApp::setup(){
 	//パラメータウィンドウのsetUp
 	_parameterWindow.setUp(ofGetWindowWidth() - _pWWidth, _verticalPadding, 
 		_pWWidth, _windowHeight);
-	//クリックポイントの初期化
-	for (int i = 0; i < NUM; i++) 
-	{
-		_pos[i].x = 0;
-		_pos[i].y = 0;
-	}
-	//myModel.setScale(0.5, 0.5, 0.5);
-	//myModel.setRotation(0, 90, 1, 0, 0);
+
 	
+	
+	//3Dモデルのライトの初期化
 	_light.setPosition(0, 0, 500);
 }
 
@@ -81,7 +107,9 @@ void ofApp::draw(){
 	//ボーンポイントの描画
 	for (int i = 0; i < NUM; i++) 
 	{
-		ofCircle(_pos[i].x, _pos[i].y, 4);
+		ofSetColor(0, 0, 255);
+		ofFill();
+		ofCircle(_bonePointArray.at(i).x, _bonePointArray.at(i).y, 10);
 	}
 	//3Dモデルの描画
 	ofEnableDepthTest();

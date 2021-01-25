@@ -2,12 +2,13 @@
 
 #include "ofMain.h"
 #include "DrawDragAndDropRect.h"
+#include "ClickRect.h"
 //#include "ofxAssimpModelLoader.h"
 #include "ofxGui.h"
 #include "map"
 #define NUM 7
 
-enum boneName
+enum class boneName
 {
 	head,
 	r_shoulder,
@@ -68,7 +69,8 @@ private:
 		_arrayPadding = 32, 
 		_cWWidth = 724, _windowHeight = 728,
 		_mWWidth = 130, _mWHeight = 120,
-		_pWWidth = 140;
+		_pWWidth = 200, _clickWindowWidth = 50, _clickWindowHeight = 50;
 	//3DÉÇÉfÉãÇÃç¿ïW
 	float _mPosX, _mPosY;
+	bool isCharacterCGDDed = false, isBoneSetted = false;
 };
