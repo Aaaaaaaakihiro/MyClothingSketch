@@ -13,6 +13,7 @@ class ClickRect
 		void mouseReleased(int x, int y, int button);
 		void setIsClickedFalse();
 		void setIsClickedTrue();
+		bool getIsClickedBool();
 
 	private:
 		ofImage _img;

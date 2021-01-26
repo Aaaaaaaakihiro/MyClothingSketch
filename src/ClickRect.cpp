@@ -62,6 +62,10 @@ void ClickRect::update() {
 	
 }
 
+bool ClickRect::getIsClickedBool() {
+	return _isClicked;
+}
+
 void ClickRect::setIsClickedFalse() {
 	_isClicked = false;
 }

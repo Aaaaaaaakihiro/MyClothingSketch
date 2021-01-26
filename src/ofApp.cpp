@@ -119,6 +119,16 @@ void ofApp::update(){
 	/*_camera.lookAt(ofVec3f(0, 0, 0));
 	_camera.setPosition(500 * cos(ofGetElapsedTimef() / 10), 200,
 		500 * sin(ofGetElapsedTimef() / 10));*/
+	
+	/*すべてのクリックボックスのisClickedBoolを監視．
+	ひとつでもisClickedがtrueになった場合はそのウィンドウのBoneNumを取得しselectedBoneNumに設定
+	isBoneSelectedをtrueにし，ボーン選択を待機
+	ボーンが選択された際にはisBoneSelectedをFalseにし，すべてのクリックボックスのisClickedをFalseにする．
+	*/
+
+	/*
+	すべてのisBone[boneNum]Selectedがtrueになった時，isAllBoneSelectedをtrueにする
+	*/
 }
 
 //--------------------------------------------------------------
