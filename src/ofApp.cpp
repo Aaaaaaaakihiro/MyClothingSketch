@@ -5,6 +5,14 @@ void ofApp::setup(){
 	//背景の設定
 	ofBackground(255, 255, 255);
 
+	//ボーンの名前の羅列(主にクリックボックス用)
+	_boneNameList.insert(std::make_pair(0, "Head"));
+	_boneNameList.insert(std::make_pair(1, "L_Shoulder"));
+	_boneNameList.insert(std::make_pair(2, "R_Shoulder"));
+	_boneNameList.insert(std::make_pair(3, "Waist"));
+	_boneNameList.insert(std::make_pair(4, "L_Foot"));
+	_boneNameList.insert(std::make_pair(5, "R_Foot"));
+
 	//ボーンの座標の初期化
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::head), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::r_shoulder), ofVec2f(0, 0)));
@@ -64,6 +72,14 @@ void ofApp::setup(){
 	_mWindowArray.insert(std::make_pair(3, _mWindow3));
 	_mWindowArray.insert(std::make_pair(4, _mWindow4));
 
+	//clickWindowArrayにwindowたちを追加
+	_clickWindowArray.insert(std::make_pair(0, _clickWindow0));
+	_clickWindowArray.insert(std::make_pair(1, _clickWindow1));
+	_clickWindowArray.insert(std::make_pair(2, _clickWindow2));
+	_clickWindowArray.insert(std::make_pair(3, _clickWindow3));
+	_clickWindowArray.insert(std::make_pair(4, _clickWindow4));
+	_clickWindowArray.insert(std::make_pair(5, _clickWindow5));
+
 	//DDRectを初期化
 	//キャラウィンドウ
 	_characterWindow.setUp(ofGetWindowWidth() * 0.5 - _cWWidth * 0.5 ,
@@ -78,8 +94,18 @@ void ofApp::setup(){
 	_parameterWindow.setUp(ofGetWindowWidth() - _pWWidth, _verticalPadding, 
 		_pWWidth, _windowHeight);
 
-	
-	
+	//クリックウィンドウのsetUp
+	for (int i = 0; i < _boneNum; i++) {
+		_clickWindowArray.at(i).setUp(
+			ofGetWindowWidth() * 0.5
+			- (_horizontalPadding * 0.5)
+			- (2.0 * _horizontalPadding)
+			- (3.0 * _clickWindowWidth)
+			+ i * (_clickWindowWidth + _horizontalPadding),
+			_verticalPadding + 668 + 10,
+			_clickWindowWidth, _clickWindowHeight, i,_boneNameList.at(i));
+	}
+
 	//3Dモデルのライトの初期化
 	_light.setPosition(0, 0, 500);
 }
@@ -103,7 +129,11 @@ void ofApp::draw(){
 	for (int i = 0; i < _modelNum; i++) {
 		_mWindowArray.at(i).draw();
 	}
-	_parameterWindow.draw();
+	//_parameterWindow.draw();
+	for (int i = 0; i < _boneNum; i++) {
+		_clickWindowArray.at(i).draw();
+	}
+
 	//ボーンポイントの描画
 	for (int i = 0; i < NUM; i++) 
 	{
