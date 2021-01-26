@@ -2,22 +2,25 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	//アプリの設定
+	ofSetWindowTitle(u8"着せ替えアプリ");
+
 	//背景の設定
 	ofBackground(255, 255, 255);
 
 	//ボーンの名前の羅列(主にクリックボックス用)
-	_boneNameList.insert(std::make_pair(0, "Head"));
-	_boneNameList.insert(std::make_pair(1, "L_Shoulder"));
-	_boneNameList.insert(std::make_pair(2, "R_Shoulder"));
-	_boneNameList.insert(std::make_pair(3, "Waist"));
-	_boneNameList.insert(std::make_pair(4, "L_Foot"));
-	_boneNameList.insert(std::make_pair(5, "R_Foot"));
+	_boneNameList.insert(std::make_pair(0, u8"頭"));
+	_boneNameList.insert(std::make_pair(1, u8"左肩"));
+	_boneNameList.insert(std::make_pair(2, u8"右肩"));
+	_boneNameList.insert(std::make_pair(3, u8"腰"));
+	_boneNameList.insert(std::make_pair(4, u8"左足"));
+	_boneNameList.insert(std::make_pair(5, u8"右足"));
 
 	//ボーンの座標の初期化
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::head), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::r_shoulder), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::l_shoulder), ofVec2f(0, 0)));
-	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::chest), ofVec2f(0, 0)));
+	//_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::chest), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::waist), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::r_leg), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::l_leg), ofVec2f(0, 0)));
@@ -113,9 +116,9 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	//myModel.update();
-	_camera.lookAt(ofVec3f(0, 0, 0));
+	/*_camera.lookAt(ofVec3f(0, 0, 0));
 	_camera.setPosition(500 * cos(ofGetElapsedTimef() / 10), 200,
-		500 * sin(ofGetElapsedTimef() / 10));
+		500 * sin(ofGetElapsedTimef() / 10));*/
 }
 
 //--------------------------------------------------------------
@@ -135,12 +138,13 @@ void ofApp::draw(){
 	}
 
 	//ボーンポイントの描画
-	for (int i = 0; i < NUM; i++) 
+	/*for (int i = 0; i < NUM; i++) 
 	{
 		ofSetColor(0, 0, 255);
 		ofFill();
 		ofCircle(_bonePointArray.at(i).x, _bonePointArray.at(i).y, 10);
-	}
+	}*/
+
 	//3Dモデルの描画
 	ofEnableDepthTest();
 	_light.enable();
@@ -167,7 +171,6 @@ void ofApp::keyPressed(int key){
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
 	_characterWindow.keyReleased();
-
 }
 
 //--------------------------------------------------------------
@@ -182,16 +185,28 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
 	//マウスボタンを押して離したときにクリックポイントの座標が0～４番の順で更新される
 	//4番まで更新し終えたら、また0番から更新する
-	_pos[_cCoutnerNum].x = x;
+	/*_pos[_cCoutnerNum].x = x;
 	_pos[_cCoutnerNum].y = y;
-	_cCoutnerNum = ++_cCoutnerNum;
+	_cCoutnerNum = ++_cCoutnerNum;*/
+
+	//クリックウィンドウ内でマウスボタンがリリースされたらそのウィンドウに割り当てられたボーン指定モードに入る
+	/*_clickWindow0.mouseReleased(x, y, button);
+	_clickWindow1.mouseReleased(x, y, button);
+	_clickWindow2.mouseReleased(x, y, button);
+	_clickWindow3.mouseReleased(x, y, button);
+	_clickWindow4.mouseReleased(x, y, button);
+	_clickWindow5.mouseReleased(x, y, button);*/
+	for (int i = 0; i < _boneNum; i++) {
+		_clickWindowArray.at(i).mouseReleased(x, y, button);
+	}
+
 }
 
 //--------------------------------------------------------------
