@@ -24,6 +24,9 @@ void ofApp::setup(){
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::waist), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::r_leg), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::l_leg), ofVec2f(0, 0)));
+
+	//クリックウィンドウのboolの配列
+
 	//クリックポイントの初期化
 	/*for (int i = 0; i < NUM; i++)
 	{
@@ -88,6 +91,7 @@ void ofApp::setup(){
 	_characterWindow.setUp(ofGetWindowWidth() * 0.5 - _cWWidth * 0.5 ,
 		/*ofGetWindowHeight() * 0.5 - _windowHeight * 0.5*/_verticalPadding, 
 		_cWWidth - 60, _windowHeight - _horizontalPadding - _clickWindowHeight);
+
 	//モデルウィンドウをmapから呼び出してsetUpする
 	for (int i = 0; i < _modelNum; i++) {
 		_mWindowArray.at(i).setUp(_horizontalPadding, _verticalPadding
@@ -120,15 +124,31 @@ void ofApp::update(){
 	_camera.setPosition(500 * cos(ofGetElapsedTimef() / 10), 200,
 		500 * sin(ofGetElapsedTimef() / 10));*/
 	
-	/*すべてのクリックボックスのisClickedBoolを監視．
-	ひとつでもisClickedがtrueになった場合はそのウィンドウのBoneNumを取得しselectedBoneNumに設定
-	isBoneSelectedをtrueにし，ボーン選択を待機
-	ボーンが選択された際にはisBoneSelectedをFalseにし，すべてのクリックボックスのisClickedをFalseにする．
+	/*
+	* すべてのボーン選択ウィンドウのisclickedBoolを監視．
+	* もしisClickedBoolがtrueになったらisSelectingBoneをtrueにし，ボーン指定以外のクリック操作をロック．
+	* ボーンの指定が終わればロックを解除する．
 	*/
+	for (int i = 0; i < _boneNum; i++) {
+		if(!_isSelectingBone && _clickWindowArray.at(i).getIsClickedBool())
+		{
+			_isSelectingBone = true;
+		}
+	}
 
 	/*
-	すべてのisBone[boneNum]Selectedがtrueになった時，isAllBoneSelectedをtrueにする
+	* すべてのボーンが設定されていない時，ボーンがどれだけ設定サれているかを確認して，
+	* すべてのボーンが設定されている時に初めてisAllBoneSettedをtrueにする
 	*/
+	if (!isAllBoneSetted) {
+		int bCounter = 0;
+		for (int i = 0; i < _boneNum; i++) {
+			if (_bonePointArray.at(i) == ofVec2f(0, 0))bCounter++;
+		}
+		if (bCounter == _boneNum) isAllBoneSetted = true;
+	}
+
+	//モデルウィンドウにひたすら座標を流し続ける
 }
 
 //--------------------------------------------------------------
@@ -180,7 +200,7 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-	_characterWindow.keyReleased();
+	//_characterWindow.keyReleased();
 }
 
 //--------------------------------------------------------------
@@ -213,10 +233,24 @@ void ofApp::mouseReleased(int x, int y, int button){
 	_clickWindow3.mouseReleased(x, y, button);
 	_clickWindow4.mouseReleased(x, y, button);
 	_clickWindow5.mouseReleased(x, y, button);*/
-	for (int i = 0; i < _boneNum; i++) {
-		_clickWindowArray.at(i).mouseReleased(x, y, button);
+
+	//ボーン選択中でない時だけボーン指定モードを切り替えることができる
+	if (!_isSelectingBone) {
+		for (int i = 0; i < _boneNum; i++) {
+			_clickWindowArray.at(i).mouseReleased(x, y, button);
+		}
 	}
 
+	//ボーン選択中のみキャラクターウィンドウでボーンの指定が行える
+	if (_isSelectingBone && ofGetWindowWidth() * 0.5 - _cWWidth * 0.5 <= x &&
+		_verticalPadding <= y &&
+		x <= ofGetWindowWidth() * 0.5 - _cWWidth * 0.5 + _cWWidth - 60 &&
+		y <= _verticalPadding + _windowHeight - _horizontalPadding - _clickWindowHeight)
+	{
+		_bonePointArray.at(_selectedBoneNum) = ofVec2f(x, y);
+		std::cout << "CharacterWindow MouseReleased!! "
+			<< "x : " << x << " , y : " << y << endl;
+	}
 }
 
 //--------------------------------------------------------------
@@ -241,7 +275,18 @@ void ofApp::gotMessage(ofMessage msg){
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
-	
+	//すべてのボーンが設定されていない間とボーン選択中でないときだけキャラクター画像をD&Dできる
+	if(!_isSelectingBone || !isAllBoneSetted)
+	_characterWindow.dragEvent(dragInfo);
+
+	//すべてのボーンを設定した後にだけ3Dモデルをドラッグ＆ドロップできる
+	if (isAllBoneSetted) 
+	{
+		for (int i = 0; i < _modelNum; i++) {
+			_mWindowArray.at(i).dragEvent(dragInfo);
+		}
+	}
+
 	//ドラッグアンドドロップするウィンドウのドラッグイベント起動
 	//picRect1.dragEvent(dragInfo);
 }

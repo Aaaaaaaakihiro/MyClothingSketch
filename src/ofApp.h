@@ -91,7 +91,9 @@ private:
 	float _mPosX, _mPosY;
 	bool isCharacterCGDDed = false, isAllBoneSetted = false, isBoneTypeSelected = false,
 		_isBone0Selected = false, _isBone1Selected = false, _isBone2Selected = false,
-		_isBone3Selected = false, _isBone4Selected = false, _isBone5Selected = false;
+		_isBone3Selected = false, _isBone4Selected = false, _isBone5Selected = false,
+		_isSelectingBone = false;
+	std::map<int, bool>_clickWindowBoolArray;
 	
 	//ボーン指定モードの値
 	int _selectedBoneNum = 0;
