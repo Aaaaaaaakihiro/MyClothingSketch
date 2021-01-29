@@ -9,15 +9,16 @@ class DrawDragAndDropRect
 		void draw();
 		void keyReleased();
 		void dragEvent(ofDragInfo dragInfo);
-		void setBonePosition(int x,int y);
-		void update();
+		//void setBonePosition(int x,int y);
+		void update( int x, int y);
 
 	private:
 		ofImage img;
 		ofxAssimpModelLoader model;
 		ofxAssimpModelLoader thumbnailModel;
+		ofVec2f _bonePoint;
 		float xPos, yPos, width, height;
-		int bpx, bpy = -500;
+		int bpx, bpy = 0;
 		bool boneSetted = false;
 
 		//íZåaì‡Ç…éwíËÇÃç¿ïWÇ™ä‹Ç‹ÇÍÇƒÇ¢ÇÍÇŒtrue,ÇªÇ§Ç≈Ç»ÇØÇÍÇŒfalse

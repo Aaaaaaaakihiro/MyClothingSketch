@@ -25,8 +25,6 @@ void ofApp::setup(){
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::r_leg), ofVec2f(0, 0)));
 	_bonePointArray.insert(std::make_pair(static_cast<int>(boneName::l_leg), ofVec2f(0, 0)));
 
-	//クリックウィンドウのboolの配列
-
 	//クリックポイントの初期化
 	/*for (int i = 0; i < NUM; i++)
 	{
@@ -149,6 +147,13 @@ void ofApp::update(){
 	}
 
 	//モデルウィンドウにひたすら座標を流し続ける
+	if (isAllBoneSetted) {
+		for (int i = 0; i < _modelNum; i++) {
+			int x = _bonePointArray.at(i).x;
+			int y = _bonePointArray.at(i).y;
+			_mWindowArray.at(i).update(x,y);
+		}
+	}
 }
 
 //--------------------------------------------------------------

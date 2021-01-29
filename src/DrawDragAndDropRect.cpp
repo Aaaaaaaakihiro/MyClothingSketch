@@ -22,15 +22,15 @@ void DrawDragAndDropRect::draw() {
 	if (img.isAllocated()) {
 		img.draw(xPos, yPos, width, height);
 	}
-	if(boneSetted) model.drawFaces();
+	model.drawFaces();
 	thumbnailModel.drawFaces();
 }
 
-void DrawDragAndDropRect::update() {
-	
-	model.update();
-	thumbnailModel.update();
-	model.setPosition(bpx,bpy,0);
+void DrawDragAndDropRect::update(int x, int y) {
+		if(!boneSetted)boneSetted = true;
+		model.setPosition(x, y, 0);
+		model.update();
+		thumbnailModel.update();
 }
 
 void DrawDragAndDropRect::keyReleased() {
@@ -58,8 +58,8 @@ void DrawDragAndDropRect::dragEvent(ofDragInfo dragInfo) {
 	}
 }
 
-void DrawDragAndDropRect::setBonePosition(int x, int y) {
+/*void DrawDragAndDropRect::setBonePosition(int x, int y) {
 	if (!boneSetted) boneSetted = true;
 	bpx = x;
 	bpy = y;
-}
+}*/
