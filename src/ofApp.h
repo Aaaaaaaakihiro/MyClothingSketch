@@ -39,6 +39,9 @@ public:
 
 
 private:
+	//ウィンドウのキャッシュ
+	ofRectangle _windowRect;
+
 	//ドラッグアンドドロップウィンドウ
 	DrawDragAndDropRect _characterWindow, _mWindow0, 
 		_mWindow1, _mWindow2, _mWindow3, _mWindow4, _parameterWindow;

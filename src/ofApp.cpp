@@ -5,6 +5,8 @@ void ofApp::setup(){
 	//アプリの設定
 	ofSetWindowTitle(u8"着せ替えアプリ");
 
+	//ウィンドウサイズのキャッシュ
+
 	//背景の設定
 	ofBackground(255, 255, 255);
 
@@ -173,12 +175,16 @@ void ofApp::draw(){
 	}
 
 	//ボーンポイントの描画
-	/*for (int i = 0; i < NUM; i++) 
+	for (int i = 0; i < _boneNum; i++) 
 	{
-		ofSetColor(0, 0, 255);
-		ofFill();
-		ofCircle(_bonePointArray.at(i).x, _bonePointArray.at(i).y, 10);
-	}*/
+		int x = _bonePointArray.at(i).x;
+		int y = _bonePointArray.at(i).y;
+		if (!isAllBoneSetted && x != 0 && y != 0) {
+			ofSetColor(0, 0, 255);
+			ofFill();
+			ofCircle(_bonePointArray.at(i).x, _bonePointArray.at(i).y, 10);
+		}
+	}
 
 	//3Dモデルの描画
 	ofEnableDepthTest();
