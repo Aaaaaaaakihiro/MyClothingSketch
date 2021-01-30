@@ -40,7 +40,7 @@ public:
 
 private:
 	//ウィンドウのキャッシュ
-	ofRectangle _windowRect;
+	ofRectangle _cachedhWindowRect;
 
 	//ドラッグアンドドロップウィンドウ
 	DrawDragAndDropRect _characterWindow, _mWindow0, 
@@ -90,6 +90,9 @@ private:
 		_mWWidth = 130, _mWHeight = 120,
 		_pWWidth = 200, _clickWindowWidth = 50, _clickWindowHeight = 50;
 	
+	//キャッシュされた各種ウィンドウのサイズ
+	ofRectangle _cachedCharacterWindow;
+
 	//3Dモデルの座標
 	float _mPosX, _mPosY;
 	bool isCharacterCGDDed = false, isAllBoneSetted = false, isBoneTypeSelected = false,

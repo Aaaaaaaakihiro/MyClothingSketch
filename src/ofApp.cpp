@@ -6,6 +6,7 @@ void ofApp::setup(){
 	ofSetWindowTitle(u8"着せ替えアプリ");
 
 	//ウィンドウサイズのキャッシュ
+	_cachedhWindowRect.set(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 
 	//背景の設定
 	ofBackground(255, 255, 255);
@@ -33,11 +34,16 @@ void ofApp::setup(){
 		_pos[i].x = 0;
 		_pos[i].y = 0;
 	}*/
-	
+
+	//キャラクターウィンドウのキャッシュ
+	_cachedCharacterWindow.set(_cachedhWindowRect.getWidth() * 0.5 - _cWWidth * 0.5,
+		_verticalPadding,
+		_cWWidth - 60, _windowHeight - _horizontalPadding - _clickWindowHeight);
+
 	//guiのセットアップ
 	//3Dモデルが表示される限界座標の設定
-	_minPos = ofVec2f(0, 0);
-	_maxPos = ofVec2f(ofGetWindowWidth(), ofGetWindowHeight());
+	_minPos = ofVec2f(_cachedCharacterWindow.getX(), _cachedCharacterWindow.getY());
+	_maxPos = ofVec2f(_cachedCharacterWindow.getWidth(), _cachedCharacterWindow.getHeight());
 	//3dモデルの回転限界角を設定
 	_minRotate = ofVec2f(-180, -180);
 	_maxRotate = ofVec2f(180, 180);
@@ -88,9 +94,10 @@ void ofApp::setup(){
 
 	//DDRectを初期化
 	//キャラウィンドウ
-	_characterWindow.setUp(ofGetWindowWidth() * 0.5 - _cWWidth * 0.5 ,
-		/*ofGetWindowHeight() * 0.5 - _windowHeight * 0.5*/_verticalPadding, 
-		_cWWidth - 60, _windowHeight - _horizontalPadding - _clickWindowHeight);
+	_characterWindow.setUp(_cachedCharacterWindow.getX() ,
+		_cachedCharacterWindow.getY(), 
+		_cachedCharacterWindow.getWidth(), _cachedCharacterWindow.getHeight());
+	
 
 	//モデルウィンドウをmapから呼び出してsetUpする
 	for (int i = 0; i < _modelNum; i++) {
@@ -141,21 +148,43 @@ void ofApp::update(){
 	* すべてのボーンが設定されている時に初めてisAllBoneSettedをtrueにする
 	*/
 	if (!isAllBoneSetted) {
-		int bCounter = 0;
+		//int bCounter = 0;
 		for (int i = 0; i < _boneNum; i++) {
-			if (_bonePointArray.at(i) == ofVec2f(0, 0))bCounter++;
+			if (_bonePointArray.at(i) == ofVec2f(0, 0)) break;
 		}
-		if (bCounter == _boneNum) isAllBoneSetted = true;
+		isAllBoneSetted = true;
+		//if (bCounter == _boneNum) isAllBoneSetted = true;
 	}
 
 	//モデルウィンドウにひたすら座標を流し続ける
-	if (isAllBoneSetted) {
+	if (!isAllBoneSetted) {
 		for (int i = 0; i < _modelNum; i++) {
 			int x = _bonePointArray.at(i).x;
 			int y = _bonePointArray.at(i).y;
 			_mWindowArray.at(i).update(x,y);
 		}
 	}
+	/*else if (isAllBoneSetted) {
+		for (int i = 0; i < _modelNum; i++) {
+			switch (i)
+			{
+			case 0:
+				int x = _bonePointArray.at(i).x;
+				int y = _bonePointArray.at(i).y;
+				_mWindowArray.at(i).update(x, y);
+				break;
+			case 1:
+
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			default:
+				break;
+			}
+		}
+	}*/
 }
 
 //--------------------------------------------------------------
@@ -177,9 +206,9 @@ void ofApp::draw(){
 	//ボーンポイントの描画
 	for (int i = 0; i < _boneNum; i++) 
 	{
-		int x = _bonePointArray.at(i).x;
-		int y = _bonePointArray.at(i).y;
-		if (!isAllBoneSetted && x != 0 && y != 0) {
+		/*int x = _bonePointArray.at(i).x;
+		int y = _bonePointArray.at(i).y;*/
+		if (!isAllBoneSetted && _bonePointArray.at(i).x != 0 && _bonePointArray.at(i).y != 0) {
 			ofSetColor(0, 0, 255);
 			ofFill();
 			ofCircle(_bonePointArray.at(i).x, _bonePointArray.at(i).y, 10);
