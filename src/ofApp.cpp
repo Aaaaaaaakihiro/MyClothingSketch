@@ -176,6 +176,7 @@ void ofApp::update(){
 		//トップスに関しては左肩座標と右肩座標間の線分の傾きをmodel1のRotateに代入する必要あり
 		_model_0_Pos = _bonePointArray.at(0);
 		_model_1_Pos = _bonePointArray.at(1).getMiddle(_bonePointArray.at(2));
+		_model_1_Rotate = ofVec3f(0,0, ofVec2f(_bonePointArray.at(2).x, _bonePointArray.at(1).y).angle(_bonePointArray.at(2)));
 		_model_2_Pos = _bonePointArray.at(3);
 		_model_3_Pos = _bonePointArray.at(4);
 		_model_4_Pos = _bonePointArray.at(5);

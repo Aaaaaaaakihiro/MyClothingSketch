@@ -69,8 +69,8 @@ private:
 	//ofxGuiŠÖ˜A
 	ofxGuiGroup _groupGui;
 	ofxVec2Slider _model_0_Pos, _model_1_Pos, _model_2_Pos,
-		_model_3_Pos, _model_4_Pos, 
-		_model_0_Rotate, _model_1_Rotate, _model_2_Rotate, 
+		_model_3_Pos, _model_4_Pos;
+	ofxVec3Slider _model_0_Rotate, _model_1_Rotate, _model_2_Rotate, 
 		_model_3_Rotate, _model_4_Rotate;
 	ofxFloatSlider _model_0_Size, _model_1_Size, _model_2_Size,
 		_model_3_Size, _model_4_Size;
