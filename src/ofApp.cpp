@@ -5,11 +5,14 @@ void ofApp::setup(){
 	//アプリの設定
 	ofSetWindowTitle(u8"着せ替えアプリ");
 
+	
 	//ウィンドウサイズのキャッシュ
 	_cachedhWindowRect.set(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 
+	
 	//背景の設定
 	ofBackground(255, 255, 255);
+
 
 	//ボーンの名前の羅列(主にクリックボックス用)
 	_boneNameList.insert(std::make_pair(0, u8"頭"));
@@ -40,42 +43,56 @@ void ofApp::setup(){
 		_verticalPadding,
 		_cWWidth - 60, _windowHeight - _horizontalPadding - _clickWindowHeight);
 
+
 	//guiのセットアップ
 	//3Dモデルが表示される限界座標の設定
 	_minPos = ofVec2f(_cachedCharacterWindow.getX(), _cachedCharacterWindow.getY());
 	_maxPos = ofVec2f(_cachedCharacterWindow.getWidth(), _cachedCharacterWindow.getHeight());
 	//3dモデルの回転限界角を設定
-	_minRotate = ofVec2f(-180, -180);
-	_maxRotate = ofVec2f(180, 180);
+	_minRotate = ofVec3f(-180, -180, -180);
+	_maxRotate = ofVec3f(180, 180, 180);
 	//初期回転角
-	_neutralRotate = ofVec2f(0, 0);
+	_neutralRotate = ofVec3f(0, 0, 0);
+	
 	//GUIグループの初期化
-	_groupGui.setup("", "", ofGetWindowWidth() - 200, _verticalPadding);
+	_groupGui.setup("", "", _cachedhWindowRect.getWidth() - 200, _verticalPadding);
+	
 	//GUIの代入
-	//頭
+	//ヘアアクセ
 	_groupGui.add(_model_0_Pos.setup("Cap_Pos", 
-		_bonePointArray.at(static_cast<int>(boneName::head)), 
+		_bonePointArray.at(0), 
 		_minPos, _maxPos));
 	_groupGui.add(_model_0_Rotate.setup("Cap_Rotate", _neutralRotate, _minRotate,_maxRotate));
 	_groupGui.add(_model_0_Size.setup("Cap_Size",0.5, 0, 1.0));
+	
 	//トップス
 	_groupGui.add(_model_1_Pos.setup("Tops_Pos", 
-		_pos[1], 
+		_bonePointArray.at(1), 
 		_minPos, _maxPos));
 	_groupGui.add(_model_1_Rotate.setup("Tops_Rotate", _neutralRotate, _minRotate, _maxRotate));
 	_groupGui.add(_model_1_Size.setup("Tops_Size", 0.5, 0, 1.0));
+	
 	//ボトムス
 	_groupGui.add(_model_2_Pos.setup("Bottoms_Pos", 
-		_pos[2], 
+		_bonePointArray.at(3), 
 		_minPos, _maxPos));
 	_groupGui.add(_model_2_Rotate.setup("Bottoms_Rotate", _neutralRotate, _minRotate, _maxRotate));
 	_groupGui.add(_model_2_Size.setup("Bottoms_Size", 0.5, 0, 1.0));
-	//シューズ
-	_groupGui.add(_model_3_Pos.setup("Shoes_Pos", 
-		_pos[3], 
+	
+	//シューズ(左)
+	_groupGui.add(_model_3_Pos.setup("LeftShoes_Pos", 
+		_bonePointArray.at(4), 
 		_minPos, _maxPos));
-	_groupGui.add(_model_3_Rotate.setup("Shoes_Rotate", _neutralRotate, _minRotate, _maxRotate));
-	_groupGui.add(_model_3_Size.setup("Shoes_Size", 0.5, 0, 1.0));
+	_groupGui.add(_model_3_Rotate.setup("LeftShoes_Rotate", _neutralRotate, _minRotate, _maxRotate));
+	_groupGui.add(_model_3_Size.setup("LeftShoes_Size", 0.5, 0, 1.0));
+	
+	//シューズ(右)
+	_groupGui.add(_model_4_Pos.setup("RightShoes_Pos",
+		_bonePointArray.at(5),
+		_minPos, _maxPos));
+	_groupGui.add(_model_4_Rotate.setup("RightShoes_Rotate", _neutralRotate, _minRotate, _maxRotate));
+	_groupGui.add(_model_4_Size.setup("RightShoes_Size", 0.5, 0, 1.0));
+
 
 	//mWindowArrayにmWindowを追加
 	_mWindowArray.insert(std::make_pair(0, _mWindow0));
@@ -92,18 +109,19 @@ void ofApp::setup(){
 	_clickWindowArray.insert(std::make_pair(4, _clickWindow4));
 	_clickWindowArray.insert(std::make_pair(5, _clickWindow5));
 
+
 	//DDRectを初期化
 	//キャラウィンドウ
 	_characterWindow.setUp(_cachedCharacterWindow.getX() ,
 		_cachedCharacterWindow.getY(), 
 		_cachedCharacterWindow.getWidth(), _cachedCharacterWindow.getHeight());
-	
 
 	//モデルウィンドウをmapから呼び出してsetUpする
 	for (int i = 0; i < _modelNum; i++) {
 		_mWindowArray.at(i).setUp(_horizontalPadding, _verticalPadding
 			+ i * _mWHeight + (i * _arrayPadding), _mWWidth, _mWHeight);
 	}
+
 	//パラメータウィンドウのsetUp
 	_parameterWindow.setUp(ofGetWindowWidth() - _pWWidth, _verticalPadding, 
 		_pWWidth, _windowHeight);
@@ -119,6 +137,7 @@ void ofApp::setup(){
 			_verticalPadding + 668 + 10,
 			_clickWindowWidth, _clickWindowHeight, i,_boneNameList.at(i));
 	}
+
 
 	//3Dモデルのライトの初期化
 	_light.setPosition(0, 0, 500);
@@ -152,6 +171,14 @@ void ofApp::update(){
 		for (int i = 0; i < _boneNum; i++) {
 			if (_bonePointArray.at(i) == ofVec2f(0, 0)) break;
 		}
+		std::cout << "All Bone Setted!" << endl;
+		//すべてのボーンが設定されたらGUIにボーンの座標を流し込む
+		//トップスに関しては左肩座標と右肩座標間の線分の傾きをmodel1のRotateに代入する必要あり
+		_model_0_Pos = _bonePointArray.at(0);
+		_model_1_Pos = _bonePointArray.at(1).getMiddle(_bonePointArray.at(2));
+		_model_2_Pos = _bonePointArray.at(3);
+		_model_3_Pos = _bonePointArray.at(4);
+		_model_4_Pos = _bonePointArray.at(5);
 		isAllBoneSetted = true;
 		//if (bCounter == _boneNum) isAllBoneSetted = true;
 	}
@@ -159,32 +186,33 @@ void ofApp::update(){
 	//モデルウィンドウにひたすら座標を流し続ける
 	if (!isAllBoneSetted) {
 		for (int i = 0; i < _modelNum; i++) {
-			int x = _bonePointArray.at(i).x;
-			int y = _bonePointArray.at(i).y;
-			_mWindowArray.at(i).update(x,y);
+			_mWindowArray.at(i).update(_bonePointArray.at(i),ofVec3f(0,0,0),0.5);
 		}
-	}
-	/*else if (isAllBoneSetted) {
+	}else if (isAllBoneSetted) 
+	{
 		for (int i = 0; i < _modelNum; i++) {
 			switch (i)
 			{
 			case 0:
-				int x = _bonePointArray.at(i).x;
-				int y = _bonePointArray.at(i).y;
-				_mWindowArray.at(i).update(x, y);
+				_mWindowArray.at(i).update(ofVec2f(_model_0_Pos), ofVec3f(_model_0_Rotate),_model_0_Size);
 				break;
 			case 1:
-
+				_mWindowArray.at(i).update(ofVec2f(_model_1_Pos), ofVec3f(_model_1_Rotate), _model_1_Size);
 				break;
 			case 2:
+				_mWindowArray.at(i).update(ofVec2f(_model_2_Pos), ofVec3f(_model_2_Rotate), _model_2_Size);
 				break;
 			case 3:
+				_mWindowArray.at(i).update(ofVec2f(_model_3_Pos), ofVec3f(_model_3_Rotate), _model_3_Size);
+				break;
+			case 4:
+				_mWindowArray.at(i).update(ofVec2f(_model_4_Pos), ofVec3f(_model_4_Rotate), _model_4_Size);
 				break;
 			default:
 				break;
 			}
 		}
-	}*/
+	}
 }
 
 //--------------------------------------------------------------
@@ -288,6 +316,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 		y <= _verticalPadding + _windowHeight - _horizontalPadding - _clickWindowHeight)
 	{
 		_bonePointArray.at(_selectedBoneNum) = ofVec2f(x, y);
+		_isSelectingBone = false;
 		std::cout << "CharacterWindow MouseReleased!! "
 			<< "x : " << x << " , y : " << y << endl;
 	}

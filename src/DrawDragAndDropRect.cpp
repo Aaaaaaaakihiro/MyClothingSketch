@@ -26,9 +26,13 @@ void DrawDragAndDropRect::draw() {
 	thumbnailModel.drawFaces();
 }
 
-void DrawDragAndDropRect::update(int x, int y) {
+void DrawDragAndDropRect::update(ofVec2f modelPos, ofVec3f modelRotate, float modelSize) {
 		if(!boneSetted)boneSetted = true;
-		model.setPosition(x, y, 0);
+		model.setPosition(modelPos.x, modelPos.y, 0);
+		model.setRotation(0, modelRotate.x, 1, 0, 0);
+		model.setRotation(0, modelRotate.y, 0, 1, 0);
+		model.setRotation(0, modelRotate.z, 0, 0, 1);
+		model.setScale(modelSize, modelSize, modelSize);
 		model.update();
 		thumbnailModel.update();
 }

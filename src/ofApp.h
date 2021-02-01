@@ -77,7 +77,7 @@ private:
 
 
 	//衣服Modelの数
-	int _modelNum = 4;
+	int _modelNum = 5;
 	
 	//ボーンポイントの数
 	int _cCoutnerNum = 0;

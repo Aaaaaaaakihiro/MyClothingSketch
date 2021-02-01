@@ -10,7 +10,7 @@ class DrawDragAndDropRect
 		void keyReleased();
 		void dragEvent(ofDragInfo dragInfo);
 		//void setBonePosition(int x,int y);
-		void update( int x, int y);
+		void update(ofVec2f modelPos, ofVec3f modelRotate, float modelSize);
 
 	private:
 		ofImage img;
