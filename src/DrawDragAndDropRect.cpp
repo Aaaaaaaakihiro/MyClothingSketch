@@ -6,9 +6,13 @@ void DrawDragAndDropRect::setUp(float _x, float _y, float _width, float _height)
 	yPos = _y;
 	width = _width;
 	height = _height;
-	model.setPosition(bpx, bpy, 0);
+	model.setPosition(0, 0, 0);
 	model.setScale(0.5, 0.5, 0.5);
-	thumbnailModel.setPosition(_x + _width, _y + _height, 0);
+	_cam.enableOrtho();
+	_cam.setPosition(0, 0, 500);
+	_cam.lookAt(ofVec3f(0, 0, 0));
+	ofVec3f thumbPos = _cam.screenToWorld(ofVec3f(xPos + width * 0.5, yPos + height * 0.5, 0));
+	thumbnailModel.setPosition(thumbPos.x, thumbPos.y, thumbPos.z);
 	thumbnailModel.setScale(0.1, 0.1, 0.1);
 }
 
@@ -22,19 +26,22 @@ void DrawDragAndDropRect::draw() {
 	if (img.isAllocated()) {
 		img.draw(xPos, yPos, width, height);
 	}
+}
+
+void DrawDragAndDropRect::drawModel() {
+//std:cout << "Draw Model" << endl;
 	model.drawFaces();
+}
+
+void DrawDragAndDropRect::drawThumbnailModel() {
+	//std::cout << "Draw Thumbnail Model" << endl;
+	
 	thumbnailModel.drawFaces();
 }
 
-void DrawDragAndDropRect::update(ofVec2f modelPos, ofVec3f modelRotate, float modelSize) {
-		if(!boneSetted)boneSetted = true;
-		model.setPosition(modelPos.x, modelPos.y, 0);
-		model.setRotation(0, modelRotate.x, 1, 0, 0);
-		model.setRotation(0, modelRotate.y, 0, 1, 0);
-		model.setRotation(0, modelRotate.z, 0, 0, 1);
-		model.setScale(modelSize, modelSize, modelSize);
-		model.update();
-		thumbnailModel.update();
+void DrawDragAndDropRect::update() {
+	model.update();
+	thumbnailModel.update();
 }
 
 void DrawDragAndDropRect::keyReleased() {
@@ -50,11 +57,14 @@ void DrawDragAndDropRect::dragEvent(ofDragInfo dragInfo) {
 			for (int i = 0; i < dragInfo.files.size(); i++) {
 				string ext = ofToLower(ofFilePath::getFileExt(dragInfo.files[i]));
 				if (ext == "dae") {
+					std::cout << "3D Model Dropped" << endl;
 					model.loadModel(dragInfo.files[i]);
 					thumbnailModel.loadModel(dragInfo.files[i]);
 				}
 				else if (ext == "jpg" || ext == "jpeg" || ext == "png") {
+					std::cout << "Character Image Added" << endl;
 					img.load(dragInfo.files[i]);
+					_isCharacterImgAdded = true;
 				}
 			}
 			
@@ -62,8 +72,21 @@ void DrawDragAndDropRect::dragEvent(ofDragInfo dragInfo) {
 	}
 }
 
-/*void DrawDragAndDropRect::setBonePosition(int x, int y) {
-	if (!boneSetted) boneSetted = true;
-	bpx = x;
-	bpy = y;
-}*/
+void DrawDragAndDropRect::setPosition(ofVec3f modelPos) {
+	model.setPosition(modelPos.x, modelPos.y, modelPos.z);
+}
+
+void DrawDragAndDropRect::setRotate(ofVec3f modelRotate) {
+	model.setRotation(0, modelRotate.x, 1, 0, 0);
+	model.setRotation(0, modelRotate.y, 0, 1, 0);
+	model.setRotation(0, modelRotate.z, 0, 0, 1);
+}
+
+void DrawDragAndDropRect::setSize(float modelSize) {
+	model.setScale(modelSize, modelSize, modelSize);
+}
+
+bool DrawDragAndDropRect::getCharacterAddedBool() {
+	return _isCharacterImgAdded;
+}
+
