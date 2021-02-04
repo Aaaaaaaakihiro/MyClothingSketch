@@ -96,22 +96,34 @@ void ofApp::setup(){
 	_guiGroup.add(_model1PosSlider.set("Tops_Position", _bonePointArray.at(1),
 		_minPos, _maxPos));
 	_guiGroup.add(_model1RotateSlider.set("Tops_Rotation", _neutralRotate, _minRotate, _maxRotate));
-	_guiGroup.add(_model_1_Size.setup("Cap_Size", 0.5, 0, 1.0));
+	_guiGroup.add(_model_1_Size.setup("Tops_Size", 0.5, 0, 1.0));
+	_model1PosSlider.addListener(this, &ofApp::setModel1BonePosition);
+	_model1RotateSlider.addListener(this, &ofApp::setModel1Rotation);
+	_model_1_Size.addListener(this, &ofApp::setModel1Size);
 	//ボトムス
 	_guiGroup.add(_model2PosSlider.set("Bottoms_Position", _bonePointArray.at(3),
 		_minPos, _maxPos));
 	_guiGroup.add(_model2RotateSlider.set("Bottoms_Rotation", _neutralRotate, _minRotate, _maxRotate));
 	_guiGroup.add(_model_2_Size.setup("Bottoms_Size", 0.5, 0, 1.0));
+	_model2PosSlider.addListener(this, &ofApp::setModel2BonePosition);
+	_model2RotateSlider.addListener(this, &ofApp::setModel2Rotation);
+	_model_2_Size.addListener(this, &ofApp::setModel2Size);
 	//シューズ（左）
 	_guiGroup.add(_model3PosSlider.set("L_Shoes_Position", _bonePointArray.at(4),
 		_minPos, _maxPos));
 	_guiGroup.add(_model3RotateSlider.set("L_Shoes_Rotation", _neutralRotate, _minRotate, _maxRotate));
 	_guiGroup.add(_model_3_Size.setup("L_Shoes_Size", 0.5, 0, 1.0));
+	_model3PosSlider.addListener(this, &ofApp::setModel3BonePosition);
+	_model3RotateSlider.addListener(this, &ofApp::setModel3Rotation);
+	_model_3_Size.addListener(this, &ofApp::setModel3Size);
 	//シューズ（右）
 	_guiGroup.add(_model4PosSlider.set("R_Shoes_Position", _bonePointArray.at(5),
 		_minPos, _maxPos));
 	_guiGroup.add(_model4RotateSlider.set("R_Shoes_Rotation", _neutralRotate, _minRotate, _maxRotate));
 	_guiGroup.add(_model_4_Size.setup("R_Shoes_Size", 0.5, 0, 1.0));
+	_model4PosSlider.addListener(this, &ofApp::setModel4BonePosition);
+	_model4RotateSlider.addListener(this, &ofApp::setModel4Rotation);
+	_model_4_Size.addListener(this, &ofApp::setModel4Size);
 	//スクリーンショットボタン
 	_guiGroup.add(_screenShotButton.setup("Generate"));
 	_screenShotButton.addListener(this, &ofApp::takeScreenShot);
@@ -250,11 +262,11 @@ void ofApp::update(){
 			_mWindowArray.at(1).setPosition(_camera.screenToWorld(ofVec3f(ofVec2f(_model1PosSlider).x, ofVec2f(_model1PosSlider).y, 0)));
 			_model1RotateSlider = ofVec3f(0, 0, ofVec2f(_bonePointArray.at(2).x, _bonePointArray.at(1).y).angle(_bonePointArray.at(2)));
 			_model2PosSlider = _bonePointArray.at(3);
-			_mWindowArray.at(2).setPosition(ofVec3f(ofVec2f(_model2PosSlider).x, ofVec2f(_model2PosSlider).y,0));
+			_mWindowArray.at(2).setPosition(_camera.screenToWorld(ofVec3f(ofVec2f(_model2PosSlider).x, ofVec2f(_model2PosSlider).y,0)));
 			_model3PosSlider = _bonePointArray.at(4);
-			_mWindowArray.at(3).setPosition(ofVec3f(ofVec2f(_model3PosSlider).x, ofVec2f(_model3PosSlider).y, 0));
+			_mWindowArray.at(3).setPosition(_camera.screenToWorld(ofVec3f(ofVec2f(_model3PosSlider).x, ofVec2f(_model3PosSlider).y, 0)));
 			_model4PosSlider = _bonePointArray.at(5);
-			_mWindowArray.at(4).setPosition(ofVec3f(ofVec2f(_model4PosSlider).x, ofVec2f(_model4PosSlider).y, 0));
+			_mWindowArray.at(4).setPosition(_camera.screenToWorld(ofVec3f(ofVec2f(_model4PosSlider).x, ofVec2f(_model4PosSlider).y, 0)));
 			isAllBoneSetted = true;
 		}
 
@@ -343,7 +355,7 @@ void ofApp::draw(){
 	//3Dモデルの描画
 	ofEnableDepthTest();
 	_light.enable();
-		ofPushMatrix();
+		//ofPushMatrix();
 			_camera.begin();
 			for (int i = 0; i < _modelNum; i++)
 			{
@@ -352,7 +364,7 @@ void ofApp::draw(){
 				_mWindowArray.at(i).drawThumbnailModel();
 			}
 			_camera.end();
-		ofPopMatrix();
+		//ofPopMatrix();
 	_light.disable();
 	ofDisableDepthTest();
 
@@ -456,7 +468,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 	for (int i = 0; i < _modelNum; i++) 
 	{
-		_mWindowArray.at(i).dragEvent(dragInfo);
+		_mWindowArray.at(i).modelDragEvent(dragInfo);
 	}
 
 
@@ -504,12 +516,72 @@ void ofApp::setModel0BonePosition(ofVec2f &position) {
 	_mWindowArray.at(0).setPosition(_camera.screenToWorld(ofVec3f(position.x, position.y, 0)));
 }
 
+void ofApp::setModel1BonePosition(ofVec2f& position) {
+	std::cout << "Model_1_Position Changed.  x : " << position.x << " y : " << position.y << endl;
+	_mWindowArray.at(1).setPosition(_camera.screenToWorld(ofVec3f(position.x, position.y, 0)));
+}
+
+void ofApp::setModel2BonePosition(ofVec2f& position) {
+	std::cout << "Model_2_Position Changed.  x : " << position.x << " y : " << position.y << endl;
+	_mWindowArray.at(2).setPosition(_camera.screenToWorld(ofVec3f(position.x, position.y, 0)));
+}
+
+void ofApp::setModel3BonePosition(ofVec2f& position) {
+	std::cout << "Model_3_Position Changed.  x : " << position.x << " y : " << position.y << endl;
+	_mWindowArray.at(3).setPosition(_camera.screenToWorld(ofVec3f(position.x, position.y, 0)));
+}
+
+void ofApp::setModel4BonePosition(ofVec2f& position) {
+	std::cout << "Model_4_Position Changed.  x : " << position.x << " y : " << position.y << endl;
+	_mWindowArray.at(4).setPosition(_camera.screenToWorld(ofVec3f(position.x, position.y, 0)));
+}
+
 void ofApp::setModel0Rotation(ofVec3f &rotate) {
-	std::cout << "Model_0_Rotation Changed. x : " << rotate.x << " y : " << rotate.y << " z : " << rotate.z << endl;
+	
 	_mWindowArray.at(0).setRotate(rotate);
+}
+
+void ofApp::setModel1Rotation(ofVec3f& rotate) {
+
+	_mWindowArray.at(1).setRotate(rotate);
+}
+
+void ofApp::setModel2Rotation(ofVec3f& rotate) {
+
+	_mWindowArray.at(2).setRotate(rotate);
+}
+
+void ofApp::setModel3Rotation(ofVec3f& rotate) {
+
+	_mWindowArray.at(3).setRotate(rotate);
+}
+
+void ofApp::setModel4Rotation(ofVec3f& rotate) {
+
+	_mWindowArray.at(4).setRotate(rotate);
 }
 
 void ofApp::setModel0Size(float &size) {
 	std::cout << "Model_0_Size Changed. Size : " << size << endl;
 	_mWindowArray.at(0).setSize(size);
+}
+
+void ofApp::setModel1Size(float& size) {
+	std::cout << "Model_1_Size Changed. Size : " << size << endl;
+	_mWindowArray.at(1).setSize(size);
+}
+
+void ofApp::setModel2Size(float& size) {
+	std::cout << "Model_2_Size Changed. Size : " << size << endl;
+	_mWindowArray.at(2).setSize(size);
+}
+
+void ofApp::setModel3Size(float& size) {
+	std::cout << "Model_3_Size Changed. Size : " << size << endl;
+	_mWindowArray.at(3).setSize(size);
+}
+
+void ofApp::setModel4Size(float& size) {
+	std::cout << "Model_4_Size Changed. Size : " << size << endl;
+	_mWindowArray.at(4).setSize(size);
 }

@@ -29,8 +29,14 @@ void DrawDragAndDropRect::draw() {
 }
 
 void DrawDragAndDropRect::drawModel() {
-//std:cout << "Draw Model" << endl;
+	/*ofPushMatrix();
+	
+	ofRotateDeg(_rotateX, 1, 0, 0);
+	ofRotateDeg(_rotateY, 0, 1, 0);
+	ofRotateDeg(_rotateZ, 0, 0, 1);*/
+	
 	model.drawFaces();
+	//ofPopMatrix();
 }
 
 void DrawDragAndDropRect::drawThumbnailModel() {
@@ -56,12 +62,7 @@ void DrawDragAndDropRect::dragEvent(ofDragInfo dragInfo) {
 			dragInfo.position.y <= yPos + height) {
 			for (int i = 0; i < dragInfo.files.size(); i++) {
 				string ext = ofToLower(ofFilePath::getFileExt(dragInfo.files[i]));
-				if (ext == "dae") {
-					std::cout << "3D Model Dropped" << endl;
-					model.loadModel(dragInfo.files[i]);
-					thumbnailModel.loadModel(dragInfo.files[i]);
-				}
-				else if (ext == "jpg" || ext == "jpeg" || ext == "png") {
+				if (ext == "jpg" || ext == "jpeg" || ext == "png") {
 					std::cout << "Character Image Added" << endl;
 					img.load(dragInfo.files[i]);
 					_isCharacterImgAdded = true;
@@ -72,14 +73,44 @@ void DrawDragAndDropRect::dragEvent(ofDragInfo dragInfo) {
 	}
 }
 
+void DrawDragAndDropRect::modelDragEvent(ofDragInfo dragInfo) {
+	for (int i = 0; i < dragInfo.files.size(); i++) {
+		if (xPos <= dragInfo.position.x &&
+			yPos <= dragInfo.position.y &&
+			dragInfo.position.x <= xPos + width &&
+			dragInfo.position.y <= yPos + height) {
+			for (int i = 0; i < dragInfo.files.size(); i++) {
+				string ext = ofToLower(ofFilePath::getFileExt(dragInfo.files[i]));
+				if (ext == "dae") {
+					std::cout << "3D Model Dropped" << endl;
+					model.loadModel(dragInfo.files[i]);
+					thumbnailModel.loadModel(dragInfo.files[i]);
+				}
+				else if (ext == "jpg" || ext == "jpeg" || ext == "png") {
+					std::cout << "Texture Image Added" << endl;
+					model.getTextureForMesh(dragInfo.files[i]);
+					thumbnailModel.getTextureForMesh(dragInfo.files[i]);
+				}
+			}
+
+		}
+	}
+}
+
 void DrawDragAndDropRect::setPosition(ofVec3f modelPos) {
 	model.setPosition(modelPos.x, modelPos.y, modelPos.z);
 }
 
 void DrawDragAndDropRect::setRotate(ofVec3f modelRotate) {
 	model.setRotation(0, modelRotate.x, 1, 0, 0);
-	model.setRotation(0, modelRotate.y, 0, 1, 0);
-	model.setRotation(0, modelRotate.z, 0, 0, 1);
+	model.setRotation(1, modelRotate.y, 0, 1, 0);
+	model.setRotation(2, modelRotate.z, 0, 0, 1);
+	/*_rotateX = modelRotate.x;
+	_rotateY = modelRotate.y;
+	_rotateZ = modelRotate.z;*/
+	std::cout << "Model_0_Rotation Changed. x : " << modelRotate.x
+		<< " y : " << modelRotate.y << " z : " 
+		<< modelRotate.z << endl;
 }
 
 void DrawDragAndDropRect::setSize(float modelSize) {
