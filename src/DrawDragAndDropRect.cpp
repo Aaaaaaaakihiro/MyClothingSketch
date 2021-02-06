@@ -102,8 +102,8 @@ void DrawDragAndDropRect::setPosition(ofVec3f modelPos) {
 }
 
 void DrawDragAndDropRect::setRotate(ofVec3f modelRotate) {
-	model.setRotation(0, modelRotate.x, 1, 0, 0);
-	model.setRotation(1, modelRotate.y, 0, 1, 0);
+	model.setRotation(0, -modelRotate.x, 0, 1, 0);
+	model.setRotation(1, -modelRotate.y, 1, 0, 0);
 	model.setRotation(2, modelRotate.z, 0, 0, 1);
 	/*_rotateX = modelRotate.x;
 	_rotateY = modelRotate.y;

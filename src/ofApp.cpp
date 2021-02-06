@@ -7,7 +7,7 @@ void ofApp::setup(){
 
 
 	//アプリの設定
-	ofSetWindowTitle(u8"着せ替えアプリ");
+	ofSetWindowTitle(u8"衣装変更システム");
 
 	
 	//ウィンドウサイズのキャッシュofgetwindow
